@@ -1,0 +1,5 @@
+package com.example.vicharpt_2
+
+import io.flutter.embedding.android.FlutterActivity
+
+class MainActivity: FlutterActivity()
