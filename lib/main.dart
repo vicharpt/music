@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vicharpt_2/halaman_music.dart';
 import 'package:vicharpt_2/splash_screen.dart';
 
 void main() => runApp(const MyApp());

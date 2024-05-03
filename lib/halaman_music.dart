@@ -1,9 +1,11 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vicharpt_2/halaman_detail.dart';
 import 'package:vicharpt_2/halaman_tentang.dart';
-import 'helper/api.dart';
+import 'package:http/http.dart' as http;
 
 class HalamanMusic extends StatefulWidget {
   const HalamanMusic({super.key});
@@ -15,33 +17,13 @@ class HalamanMusic extends StatefulWidget {
 class _HalamanMusicState extends State<HalamanMusic> {
   TextEditingController search = TextEditingController();
   bool deleteSearch = false;
-  List<Map> musics = [
-    {
-      "img": "https://source.unsplash.com/random/200x200",
-      "title": "Ultraman naik haji",
-      "artis": "Almos"
-    },
-    {
-      "img": "https://source.unsplash.com/random/300x300",
-      "title": "Purkon",
-      "artis": "Darman"
-    },
-    {
-      "img": "https://source.unsplash.com/random/400x400",
-      "title": "Gadis pake baju",
-      "artis": "Nopel"
-    },
-    {
-      "img": "https://source.unsplash.com/random/500x500",
-      "title": "Bang iting pergi",
-      "artis": "Aldio"
-    },
-    {
-      "img": "https://source.unsplash.com/random/600x600",
-      "title": "Pria jatuh sakit",
-      "artis": "Jono"
-    },
-  ];
+
+  getMusic() async {
+    final response =
+        await http.get(Uri.parse("http://laravel-10.my.id/api/music"));
+    return json.decode(response.body);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -107,17 +89,25 @@ class _HalamanMusicState extends State<HalamanMusic> {
             ]),
           ),
           body: Container(
-            margin: const EdgeInsets.only(top: 15),
-            child: ListView.builder(
-              itemCount: musics.length,
-              itemBuilder: (context, index) {
-                return CardMusic(
-                    img: musics[index]["img"],
-                    titleSong: musics[index]["title"],
-                    artis: musics[index]["artis"]);
-              },
-            ),
-          ),
+              margin: const EdgeInsets.only(top: 15),
+              child: FutureBuilder(
+                future: getMusic(),
+                builder: (context, AsyncSnapshot snapshot) {
+                  if (!snapshot.hasData) {
+                    return Center(child: CircularProgressIndicator());
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        return CardMusic(
+                            img: snapshot.data[index]["foto_album"],
+                            titleSong: snapshot.data[index]["song_title"],
+                            artis: snapshot.data[index]["artis"]);
+                      },
+                    );
+                  }
+                },
+              )),
         ));
   }
 
@@ -146,7 +136,8 @@ class _HalamanMusicState extends State<HalamanMusic> {
                         BoxDecoration(borderRadius: BorderRadius.circular(999)),
                     width: 55,
                     height: 55,
-                    child: Image(image: NetworkImage(img!))),
+                    child: Image(
+                        image: NetworkImage('http://laravel-10.my.id' + img!))),
                 trailing: IconButton(
                   onPressed: () => {},
                   icon: const Icon(

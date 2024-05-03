@@ -12,8 +12,7 @@ class HalamanLogin extends StatefulWidget {
 
 class _HalamanLoginState extends State<HalamanLogin> {
   List<List> users = [
-    ["vicharpt", "anjai"],
-    ["saipul", "123"],
+    ["vicharpt", "123"],
   ];
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
